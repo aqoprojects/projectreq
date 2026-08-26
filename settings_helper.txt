@@ -1,0 +1,323 @@
+# ── Application ───────────────────────────────────────────
+APP_ENV=development          # development | test | production
+APP_SECRET_KEY=a44daa1d00dab026cb080e8bc4ddca21e44dc821a81e0e206d1f0094faa24b4fe9d552e8a98b77c0beb0e07966ebc35de239700da7d55248d68f893981ce66a3
+APP_DEBUG=true
+APP_BASE_URL=http://localhost:8000
+
+
+# ── Host ─────────────────────────────────────────────────
+CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+ALLOWED_HOSTS=["localhost","127.0.0.1"]
+
+
+# ── PostgreSQL ────────────────────────────────────────────
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=chatserver
+POSTGRES_USER=chatuser
+POSTGRES_PASSWORD=strongpass
+DATABASE_URL=postgresql+asyncpg://chatuser:strongpass@127.0.0.1:5432/chatserver
+DATABASE_TEST_URL=postgresql+asyncpg://chatuser:strongpass@127.0.0.1:5432/chatserver_test
+DATABASE_SYNC_URL=postgresql+psycopg://chatuser:strongpass@127.0.0.1:5432/chatserver
+
+DB_POOL_SIZE=10
+DB_MAX_OVERFLOW=20
+DB_POOL_TIMEOUT=30
+DB_POOL_RECYCLE=1800
+
+
+# ── Redis ─────────────────────────────────────────────────
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
+REDIS_DB_APP=0
+REDIS_DB_CELERY=1
+REDIS_DB_STREAMS=2
+REDIS_DB_TEST=3
+
+
+REDIS_URL=redis://127.0.0.1:6379/0
+REDIS_STREAM_URL=redis://127.0.0.1:6379/2
+REDIS_TEST_URL=redis://127.0.0.1:6379/3
+
+REDIS_MAX_CONNECTIONS=50
+REDIS_SOCKET_TIMEOUT=5
+REDIS_SOCKET_CONNECT_TIMEOUT=5
+REDIS_RETRY_ON_TIMEOUT=true
+
+STREAM_MAX_LEN=10000            # XTRIM max-len per stream
+STREAM_CONSUMER_GROUP=chat_cg   # default consumer group name
+STREAM_BLOCK_MS=5000            # XREADGROUP block timeout in milliseconds
+
+
+
+# ── RabbitMQ ──────────────────────────────────────────────
+RABBITMQ_HOST=localhost
+RABBITMQ_PORT=5672
+RABBITMQ_VHOST=chatserver
+RABBITMQ_USER=chatserver
+RABBITMQ_PASSWORD=strongpass
+
+CELERY_BROKER_URL=amqp://chatworker:strongpass@127.0.0.1:5672/chatserver
+CELERY_RESULT_BACKEND=redis://127.0.0.1:6379/1
+
+CELERY_TASK_SERIALIZER=json
+CELERY_RESULT_SERIALIZER=json
+CELERY_ACCEPT_CONTENT=["json"]
+CELERY_WORKER_CONCURRENCY=4
+
+
+
+RABBITMQ_MANAGEMENT_URL=http://127.0.0.1:15672
+RABBITMQ_MANAGEMENT_USER=chatadmin
+RABBITMQ_MANAGEMENT_PASSWORD=strongpass
+
+
+# ── JWT ───────────────────────────────────────────────────
+JWT_SECRET_KEY=9983eaf9733316b0417d7074b0cff5827906c4f3f6ea427018bed9c6aada5ddd
+JWT_ALGORITHM=HS256
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15
+JWT_REFRESH_TOKEN_EXPIRE_DAYS=30
+JWT_REFRESH_FAMILY_PREFIX=rt_family:
+JWT_BLACKLIST_PREFIX=bl:
+
+
+
+# ── CSRF ───────────────────────────────────────────────────
+CSRF_SECRET_KEY=1b7ad4d511a8d3717f7b6baf24b1101bea03ecf3ee022b760537d36140b60d9f
+CSRF_COOKIE_NAME=csrftoken
+CSRF_COOKIE_SECURE=false        # true in production (requires HTTPS)
+CSRF_COOKIE_SAMESITE=strict
+CSRF_COOKIE_MAX_AGE=3600        # seconds — 1 hour
+
+
+
+
+# ── Session / auth cookies ───────────────────────────────────
+AUTH_COOKIE_NAME=access_token
+AUTH_COOKIE_SECURE=false        # true in production
+AUTH_COOKIE_HTTPONLY=true
+AUTH_COOKIE_SAMESITE=strict
+AUTH_COOKIE_MAX_AGE=900         # seconds — matches access token TTL (15 min)
+
+REFRESH_COOKIE_NAME=refresh_token
+REFRESH_COOKIE_SECURE=false
+REFRESH_COOKIE_HTTPONLY=true
+REFRESH_COOKIE_SAMESITE=strict
+REFRESH_COOKIE_MAX_AGE=2592000  # seconds — 30 days
+
+
+
+
+
+# ── Email ────────────────────────────────────────────────────
+# SMTP credentials — use Mailtrap in dev to catch outgoing mail
+# without actually delivering it.
+SMTP_HOST=sandbox.smtp.mailtrap.io
+SMTP_PORT=587
+SMTP_USE_TLS=true
+SMTP_USER=e98d9d4ae219ee
+SMTP_PASSWORD=3ad921144bc05b
+EMAILS_FROM_ADDRESS=noreply@chatserver.com
+EMAILS_FROM_NAME=Chat Server
+# Email verification code TTL in seconds (10 minutes)
+VERIFICATION_CODE_TTL=600
+
+# Resend cooldown — how long a user must wait before requesting
+# another verification email (60 seconds)
+VERIFICATION_RESEND_COOLDOWN=60
+
+
+# ── Media storage ─────────────────────────────────────────
+MEDIA_ROOT=media
+MAX_UPLOAD_SIZE_MB=10
+MAX_VOICE_SIZE_MB=25
+ALLOWED_AVATAR_MIME_TYPES=["image/jpeg","image/png","image/webp","image/gif"]
+ALLOWED_ATTACHMENT_MIME_TYPES=["image/jpeg","image/png","image/webp","image/gif","application/pdf","text/plain"]
+AVATAR_THUMB_SIZES=["64","128","256"]
+
+
+
+
+# ── Rate limiting ─────────────────────────────────────────
+
+# User registration
+RATE_LIMIT_REGISTER_CAPACITY=5
+RATE_LIMIT_REGISTER_REFILL_RATE=1
+
+# Email verification (verify attempt)
+RATE_LIMIT_VERIFY_CAPACITY=5
+RATE_LIMIT_VERIFY_REFILL_RATE=1
+
+# Verification email resend
+RATE_LIMIT_RESEND_VERIFY_CAPACITY=3
+RATE_LIMIT_RESEND_VERIFY_REFILL_RATE=0.05
+
+# Login
+RATE_LIMIT_LOGIN_CAPACITY=5
+RATE_LIMIT_LOGIN_REFILL_RATE=0.0833
+
+# Token refresh
+RATE_LIMIT_REFRESH_CAPACITY=10
+RATE_LIMIT_REFRESH_REFILL_RATE=0.1667
+
+# Profile edit
+RATE_LIMIT_PROFILE_EDIT_CAPACITY=10
+RATE_LIMIT_PROFILE_EDIT_REFILL_RATE=1
+
+# Follow/unfollow rate limit — token bucket, per user_id
+RATE_LIMIT_FOLLOW_CAPACITY=20
+RATE_LIMIT_FOLLOW_REFILL_RATE=0.0167   # 1 token per 60 seconds (20/burst, then 1/min)
+
+# Post creation
+RATE_LIMIT_POST_CREATE_CAPACITY=20
+RATE_LIMIT_POST_CREATE_REFILL_RATE=2
+
+# Reply creation
+RATE_LIMIT_REPLY_CREATE_CAPACITY=30
+RATE_LIMIT_REPLY_CREATE_REFILL_RATE=5
+
+# Like
+RATE_LIMIT_LIKE_CAPACITY=60
+RATE_LIMIT_LIKE_REFILL_RATE=10
+
+# User search
+# Search rate limit — token bucket, per user_id (or IP if unauthenticated)
+RATE_LIMIT_SEARCH_CAPACITY=30
+RATE_LIMIT_SEARCH_REFILL_RATE=1.0    # 1 token per second — supports search-as-you-type
+
+# Chat message send (global per user)
+RATE_LIMIT_MESSAGE_GLOBAL_CAPACITY=60
+RATE_LIMIT_MESSAGE_GLOBAL_REFILL_RATE=10
+
+# Chat message send (per chat per user)
+RATE_LIMIT_MESSAGE_PER_CHAT_CAPACITY=30
+RATE_LIMIT_MESSAGE_PER_CHAT_REFILL_RATE=5
+
+# Interest selection
+# Interest selection rate limit — token bucket, per user_id
+RATE_LIMIT_INTEREST_CAPACITY=5
+RATE_LIMIT_INTEREST_REFILL_RATE=0.0028   # 1 token per ~6 minutes
+
+# Rate limit Redis key prefix
+RATE_LIMIT_KEY_PREFIX=rl:
+
+
+
+
+# ── Idempotency ──────────────────────────────────────────────
+# TTL in seconds for idempotency keys stored in Redis.
+# 24 hours covers the window where a client might retry a request.
+IDEMPOTENCY_TTL=86400
+IDEMPOTENCY_KEY_PREFIX=idem:
+
+
+# ── Username change cooldown ──────────────────────────────────
+# How many days a user must wait between username changes.
+USERNAME_CHANGE_COOLDOWN_DAYS=30
+USERNAME_CHANGE_KEY_PREFIX=uname_cd:
+
+
+# ── Online presence ───────────────────────────────────────────
+# How long a user is considered "online" after their last
+# heartbeat / activity (in seconds). 60 seconds = 1 minute idle
+# before they flip to "away" / "offline".
+PRESENCE_TTL=60
+PRESENCE_KEY_PREFIX=presence:
+LAST_SEEN_KEY_PREFIX=last_seen:
+
+# Daily active user tracking key prefix
+DAU_KEY_PREFIX=dau:
+
+
+# ── WebSocket ────────────────────────────────────────────────
+# Interval between server-sent ping frames (seconds)
+WS_PING_INTERVAL=25
+
+# How long to wait for a pong response before closing (seconds)
+WS_PING_TIMEOUT=10
+
+# Maximum message size the server will accept over a WebSocket
+# connection in bytes (1 MB)
+WS_MAX_MESSAGE_SIZE=1048576
+
+
+# ── Content moderation ───────────────────────────────────────
+# Toggle the content moderation Celery hook on/off.
+# When false, messages are never queued for moderation review.
+FEATURE_CONTENT_MODERATION=false
+
+# Maximum allowed message length in characters
+MESSAGE_MAX_LENGTH=4000
+
+# Maximum reply depth (how many levels deep a threaded reply can go)
+REPLY_MAX_DEPTH=10
+
+
+# ── Push notifications ───────────────────────────────────────
+# Toggle offline push notification delivery.
+# When false, Celery push tasks are queued but the adapter does
+# nothing (safe for dev where there is no FCM/APNs config).
+FEATURE_PUSH_NOTIFICATIONS=false
+
+# Firebase Cloud Messaging server key (prod only)
+FCM_SERVER_KEY=replace-me-in-production
+
+# APNs key file path and metadata (prod only)
+APNS_KEY_FILE=
+APNS_KEY_ID=
+APNS_TEAM_ID=
+APNS_TOPIC=
+
+
+# ── IP geolocation ───────────────────────────────────────────
+# External service used to look up a registering user's country,
+# city, and ISP from their IP address.
+# ip-api.com has a free tier sufficient for dev (45 req/min).
+IP_API_URL=http://ip-api.com/json
+IP_API_TIMEOUT=3                # seconds before we give up and proceed
+
+
+# ── GeoIP / search ranking ───────────────────────────────────
+# Boost weight applied to users in the same country as the
+# searching user (used in the user search ranking formula).
+SEARCH_LOCATION_BOOST=1.5
+SEARCH_MUTUAL_BOOST=2.0
+SEARCH_POPULARITY_WEIGHT=0.3
+
+
+# ── Sentry (error tracking) ──────────────────────────────────
+# Leave blank in dev — errors go to structlog stdout only.
+# Set in production to route unhandled exceptions to Sentry.
+SENTRY_DSN=
+SENTRY_TRACES_SAMPLE_RATE=0.1   # 10% of transactions traced
+
+
+# ── Feature flags ────────────────────────────────────────────
+# These booleans let you enable/disable entire subsystems without
+# deploying new code. In production, override via K8s ConfigMap.
+
+# End-to-end encryption metadata support
+FEATURE_E2E_ENCRYPTION=false
+
+# Whether edit history is stored for messages
+FEATURE_MESSAGE_EDIT_HISTORY=true
+
+# Whether soft-deleted messages show a "this message was deleted"
+# placeholder (true) or are completely hidden (false)
+FEATURE_SHOW_DELETED_PLACEHOLDER=true
+
+# Whether the user search endpoint is publicly accessible to
+# unauthenticated users (false = auth required)
+FEATURE_PUBLIC_SEARCH=false
+
+# Whether new user registrations are allowed
+# (set to false to lock down a closed-beta deployment)
+FEATURE_REGISTRATION_OPEN=true
+
+# Whether voice messages are enabled in chat
+FEATURE_VOICE_MESSAGES=true
+
+# Whether file attachments are enabled in chat
+FEATURE_FILE_ATTACHMENTS=true
