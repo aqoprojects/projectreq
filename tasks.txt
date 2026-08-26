@@ -1,0 +1,125 @@
+--------- STEP 1 -------------------
+- create/initialize folder using it 
+- inside folder, create a README.md 
+- create a .gitignore
+- create virtualenv and activate it 
+- cmd to which python path and version
+- cmd to upgrade pip 
+- create requirements folder that has base, dev, prod text files
+- required packages for base: fastapi, uvicorn, sqlalchemy, asyncpg, alembic, redis (hiredis), pyjwt(crypto), pwdlib(argon2), python-multipart, pydantic, pydantic-settings, python-dotenv, celery, kombu, structlog, httpx, pillow, orjson, python-slugify, email-validator, blurhash-python
+
+- redired packages for dev: pytest, pytest-asyncio, pytest-cov, fakereids(aioredis), black, isort, flake8, mypy, type-redis, sqlalchemy[mypy], ipython, pre-commit
+
+- install dev 
+- verify key packages loaded by importing thema and printing "all good" in cmd python it mode 
+
+
+
+
+------ STEP 2 -------------
+
+- create app, core, db, cache, services, workers, schemas, alembic, tests, scripts, media, logs, .env.example, .gitignore, .env, Makefile, pyproject.toml.
+
+- write  tool configuration in pyproject
+- write a pre commit config 
+
+
+
+
+
+---------  STEP 3 ------------
+
+- pip install PRE commit
+-  then install pre commit into git 
+- add flake8 config file 
+- Install all hook environments (pre commit)
+- Run against the whole codebase manually (pre commit)
+- cmd Check for newer revs of all repos
+- config.py
+- logging(stup.py, async_safe, __init__.py,)
+- middleware 
+- exception.py 
+- base.py
+- session.py
+- env.py  
+- alembic.ini 
+- client.py 
+- keys.py
+- checks.py  
+- lifespan 
+
+
+------------------------------------------------------------
+- main.py
+- models
+- models index (alembic/versions)
+- init alembic
+- Generate the initial migration for alembic
+- Apply to the database
+- Confirm current revision
+- Verify tables exist in PostgreSQL
+- Verify indexes exist
+- Verify enum types exist
+- Test rollback and re-apply
+- middleware
+- security
+- workers
+- workers/tasks
+- workers/queues
+
+
+
+
+
+----------------------------------------------------------------------
+
+- schemas
+- dependencies/idempotency
+- security/password 
+- security/ip_info
+- services/media_service
+- workers/tasks/media_tasks.py
+- schemas/user.py
+- services/auth_service.py
+- app/api/v1/auth.py
+- workers/tasks/email_tasks.py
+- core/errors/registration.py
+- core/security/verification.py
+- app/dependencies/auth.py
+- app/lifespan.py
+- workers/tasks/stream_tasks.py
+- core/security/stolen_token.py
+- app/dependencies/auth.py
+- workers/tasks/push_tasks.py
+- services/presence_service.py
+- workers/tasks/stream_tasks.py
+- core/errors/registration.py
+- services/user_service.py
+- app/api/v1/users.py
+- cache/keys.py
+- schemas/user.py
+- app/api/v1/users.py
+- services/user_service.py
+- app/api/v1/users.py
+- cache/keys.py
+- services/user_service.py
+- app/api/v1/users.py
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

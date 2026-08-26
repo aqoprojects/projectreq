@@ -1,0 +1,15 @@
+- AppError
+- UnauthorizedError
+- ForbiddenError
+- NotFoundError
+- ConflictError
+- UnprocessableError
+- RateLimitExceededError
+- BadRequestError
+- ServiceUnavailableError
+- IdempotencyConflictError
+- TokenError
+- StolenTokenError
+- TokenExpiredError
+- TokenTypeError
+- TokenMissingClaimsError

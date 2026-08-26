@@ -1,0 +1,9 @@
+- invalidate_user_cache
+- invalidate_user_search_cache
+- invalidate_chat_participant_cache
+- invalidate_post_cache
+- reset_unread_count
+- increment_unread_count
+- increment_notification_count
+- decrement_notification_count
+- reset_notification_count

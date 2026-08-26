@@ -1,0 +1,6 @@
+- run_migrations_offline
+- do_run_migrations
+- run_async_migrations
+- run_migrations_online
+
+- alembic.ini

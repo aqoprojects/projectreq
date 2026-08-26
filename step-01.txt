@@ -1,0 +1,18 @@
+- app env
+- app secret key 
+- app debug 
+- app base url 
+- cors orifins 
+- allowed hosts 
+- database url, sync url, test url 
+- media_root
+
+- is_development property
+- is_test
+- is_production
+-create three class settings dev,test,prod
+
+-_ENV_CLASS_MAP to map all avaibale clas settings
+
+- get_settings func to cache, get settings class and logg and return instance and instance attr like env, debug
+- var settings to call get_settings 

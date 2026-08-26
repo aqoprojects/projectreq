@@ -1,0 +1,5 @@
+- _startup_database
+- _startup_redis
+- _startup_lua_scripts
+- _shutdown_redis
+- _shutdown_database
