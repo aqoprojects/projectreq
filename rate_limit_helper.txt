@@ -1,0 +1,53 @@
+_ACTION_SETTINGS_MAP: dict[str, tuple[str, str]] = {
+    "register":      ("rate_limit_register_capacity",
+    "rate_limit_register_refill_rate"),
+    "verify":        ("rate_limit_verify_capacity",
+    "rate_limit_verify_refill_rate"),
+    "resend_verify": ("rate_limit_resend_verify_capacity",
+    "rate_limit_resend_verify_refill_rate"),
+    "login":         ("rate_limit_login_capacity",
+    "rate_limit_login_refill_rate"),
+    "refresh":       ("rate_limit_refresh_capacity",
+    "rate_limit_refresh_refill_rate"),
+    "profile_edit":  ("rate_limit_profile_edit_capacity",
+    "rate_limit_profile_edit_refill_rate"),
+    "follow":        ("rate_limit_follow_capacity",
+    "rate_limit_follow_refill_rate"),
+    "post_create":   ("rate_limit_post_create_capacity",
+    "rate_limit_post_create_refill_rate"),
+    "reply_create":  ("rate_limit_reply_create_capacity",
+    "rate_limit_reply_create_refill_rate"),
+    "like":          ("rate_limit_like_capacity",
+    "rate_limit_like_refill_rate"),
+    "search":        ("rate_limit_search_capacity",
+    "rate_limit_search_refill_rate"),
+    "msg_global":    ("rate_limit_message_global_capacity",
+    "rate_limit_message_global_refill_rate"),
+    "msg_chat":      ("rate_limit_message_per_chat_capacity",
+    "rate_limit_message_per_chat_refill_rate"),
+    "interest":      ("rate_limit_interest_capacity",
+    "rate_limit_interest_refill_rate"),
+}
+
+
+
+
+_SPAM_PATTERNS: list[re.Pattern[str]] = [
+    # Repeated single character runs (aaaaaaa, 1111111)
+    re.compile(r'(.)\1{9,}', re.UNICODE),
+    # Repeated word spam (buy buy buy buy buy)
+    re.compile(r'\b(\w+)(\s+\1){4,}\b', re.IGNORECASE | re.UNICODE),
+    # ALL CAPS long strings (shouting)
+    re.compile(r'[A-Z\s]{30,}'),
+    # Excessive punctuation
+    re.compile(r'[!?]{5,}'),
+    # URL spam — more than 3 URLs in one message
+    re.compile(r'(https?://\S+\s*){4,}', re.IGNORECASE),
+]
+
+
+
+
+
+
+
