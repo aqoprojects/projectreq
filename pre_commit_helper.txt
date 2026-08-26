@@ -1,0 +1,5 @@
+pre-commit-hooks: version = v6.0.0
+black: version = 26.5.1
+isort: version = 9.0.0a3
+flake8: version = 7.3.0
+mirrors-mypy: version = v2.1.0
