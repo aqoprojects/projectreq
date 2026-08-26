@@ -1,0 +1,31 @@
+data = [
+        "timestamp",
+        "level",
+        "event",
+        "app",
+        "env",
+        "logger",
+        "request_id",
+    ]
+"uvicorn.access" = info  on test else warning
+"uvicorn.error" = info
+ "sqlalchemy.engine"= info  on test else warning
+"sqlalchemy.pool" = warning
+"asyncpg" = warning
+"redis" = warning
+"celery" = info
+"celery.task" = info
+"celery.worker" = info
+"alembic" = info 
+"httpx" = warning 
+"httpcore" = warning
+
+
+
+_LEVEL_MAP: dict[str, int] = {
+    "debug":    logging.DEBUG,
+    "info":     logging.INFO,
+    "warning":  logging.WARNING,
+    "error":    logging.ERROR,
+    "critical": logging.CRITICAL,
+}
