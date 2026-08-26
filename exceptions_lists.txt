@@ -1,0 +1,76 @@
+status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+error_code = "internal_server_error"
+message = "An unexpected error occurred."
+
+
+status_code = status.HTTP_401_UNAUTHORIZED
+error_code = "unauthorized"
+message = "Authentication required."
+
+
+status_code = status.HTTP_403_FORBIDDEN
+error_code = "forbidden"
+message = "You do not have permission to perform this action."
+
+
+status_code = status.HTTP_404_NOT_FOUND
+error_code = "not_found"
+resource = "Resource"
+message = "{resource} not found."
+
+
+status_code = status.HTTP_409_CONFLICT
+error_code = "conflict"
+message = "A conflict occurred."
+
+
+status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+error_code = "unprocessable"
+message = "The request could not be processed."
+
+
+status_code = status.HTTP_429_TOO_MANY_REQUESTS
+error_code = "rate_limit_exceeded"
+message = "Too many requests. Please slow down."
+retry_after = 60,
+
+
+status_code = status.HTTP_400_BAD_REQUEST
+error_code = "bad_request"
+message = "Bad request."
+
+
+status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+error_code = "service_unavailable"
+message = "Service temporarily unavailable."
+
+
+status_code = status.HTTP_200_OK
+error_code = "idempotent_replay"
+message = "Duplicate request — returning cached response."
+
+
+
+error_code = "token_invalid"
+message = "Invalid or expired token."
+
+error_code = "token_stolen"
+message = "A security violation was detected. All sessions have been revoked. "
+            "Please log in again."
+
+error_code = "token_expired"
+message = "Token has expired. Please log in again.."
+
+error_code = "token_wrong_type"
+message = "Invalid token type. Expected '{expected}', received '{received}'."
+
+error_code = "token_missing_claims"
+message = "Token is missing required claims: {', '.join(sorted(missing))}."
+
+
+
+
+
+
+
+
