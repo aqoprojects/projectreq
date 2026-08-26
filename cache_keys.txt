@@ -1,0 +1,41 @@
+rate_limit_key = "rl:"
+idempotency_key = "idem:"
+blacklist_key - "bl:"
+refresh_family_key = "rt_family:"
+verification_code_key = "verify:"
+verification_resend_key = "verify_cd:" #verification_resend_cooldown.
+user_cache_key = "user:"
+user_by_username_key = "uname:"
+username_change_cooldown_key = "uname_cd:"
+presence_key = "presence:"
+last_seen_key = "last_seen:"
+dau_key = "dau:"
+user_online_duration_key = "dur:"
+chat_participants_key = "chat_p:"
+user_chat_list_key  = "chat_list:"
+unread_count_key = "unread:"
+total_unread_key = "total_unread:"
+last_read_message_key = "last_read:"
+chat_stream_key = "stream:chat:"
+notification_stream_key = "stream:notif:"
+post_cache_key = "post:"
+post_like_count_key = "likes:"
+user_liked_post_key = "liked:"
+follower_count_key = "fc:"
+following_count_key = "fg:"
+notification_unread_count_key = "notif_unread:"
+notification_idempotency_key = "notif_idem:"
+ws_connection_key = "ws_conn:"
+search_cache_key = "search:"
+is_following_key = "following:"
+user_interests_key = "user_interests:"
+all_interests_key = "interests:all"
+followers_list_first_page_key = "followers:{user_id}:page1"
+following_list_first_page_key = "following_list:{user_id}:page1"
+
+
+
+
+
+
+
