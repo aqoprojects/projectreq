@@ -1,0 +1,12 @@
+check_db = (
+            ok=True,
+            latency_ms=round(latency_ms, 2),
+            detail="ok",
+            )
+
+
+check_redis = (
+        ok=True,
+        latency_ms=round(latency_ms, 2),
+        detail="ok",
+        )
