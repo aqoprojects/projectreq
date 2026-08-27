@@ -1,0 +1,61 @@
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+wheels/
+
+# ── Virtual environments ──────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Environment & secrets ─────────────────────────────────
+.env
+.env.*
+!.env.example          # keep the example template in version control
+
+# ── IDE & editors ─────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Testing & coverage ────────────────────────────────────
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ── Logs & runtime artefacts ──────────────────────────────
+*.log
+logs/
+celerybeat-schedule
+celerybeat.pid
+
+# ── Media / uploads (stored on disk, not in git) ──────────
+media/
+uploads/
+
+# ── Alembic auto-generated (keep versions/ but not cache) ─
+alembic/versions/__pycache__/
+
+# ── Docker artefacts ──────────────────────────────────────
+*.tar
+docker-compose.override.yml
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+ehthumbs.db
+celeryError.txt
