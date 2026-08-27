@@ -1,1 +1,14 @@
-
+-r base.txt
+pytest
+pytest-asyncio
+pytest-cov
+httpx
+fakeredis[aioredis]
+black
+isort
+flake8
+mypy
+types-redis
+sqlalchemy[mypy]
+ipython
+pre-commit
