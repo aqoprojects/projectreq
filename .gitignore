@@ -59,3 +59,15 @@ docker-compose.override.yml
 .DS_Store
 ehthumbs.db
 celeryError.txt
+step-*.txt 
+cache_key.txt 
+check_helper.txt 
+exceptions_lists.txt
+ip_info.py 
+log_helper.txt 
+main_app_helper.txt 
+op.py 
+pre_commit_helper.txt 
+rate_limit_helper.txt 
+settings_helper.txt 
+task.txt 
