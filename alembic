@@ -1,0 +1,126 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto
+CREATE EXTENSION IF NOT EXISTS pg_trgm
+DROP EXTENSION IF EXISTS pgcrypto;
+DROP EXTENSION IF EXISTS pg_trgm;
+
+-----------------------------------------------
+
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_refresh_tokens_hash_active
+        ON refresh_tokens (token_hash)
+        WHERE is_revoked = false;
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_refresh_tokens_hash_active;
+
+-------------------------------------------------
+
+
+CREATE INDEX CONCURRENTLY ix_users_username_trgm
+            ON users USING gin (username gin_trgm_ops)
+            WHERE deleted_at IS NULL;
+CREATE INDEX CONCURRENTLY ix_user_profiles_display_name_trgm
+            ON user_profiles USING gin (display_name gin_trgm_ops);
+CREATE INDEX CONCURRENTLY ix_user_profiles_follower_count_desc
+    ON user_profiles (follower_count DESC);
+
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_users_username_trgm;
+DROP INDEX CONCURRENTLY IF EXISTS ix_user_profiles_display_name_trgm;
+DROP INDEX CONCURRENTLY IF EXISTS ix_user_profiles_follower_count_desc;
+
+
+------------------------------------------------------------
+
+CREATE INDEX CONCURRENTLY ix_chats_type_active
+            ON chats (chat_type)
+            WHERE deleted_at IS NULL;
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_chats_type_active;
+
+
+-----------------------------------------------------------
+
+
+CREATE INDEX CONCURRENTLY ix_messages_content_fts
+            ON messages USING gin (to_tsvector('english', content))
+            WHERE deleted_at IS NULL AND content IS NOT NULL;
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_messages_content_fts;
+
+
+
+-------------------------------------------------------------
+
+
+CREATE INDEX CONCURRENTLY ix_refresh_tokens_expired_revoked
+            ON refresh_tokens (expires_at)
+            WHERE is_revoked = true;
+
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_refresh_tokens_expired_revoked;
+
+--------------------------------------------------------------
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_notifications_created_at
+            ON notifications (created_at);
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_notifications_created_at;
+
+----------------------------------------------------------------
+
+ALTER TABLE chats
+            ADD CONSTRAINT fk_chats_last_message_id
+            FOREIGN KEY (last_message_id)
+            REFERENCES messages (id)
+            ON DELETE SET NULL
+            DEFERRABLE INITIALLY DEFERRED
+
+----------------------------------------------------------------
+
+
+CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS ix_users_email_lower
+        ON users (lower(email))
+        WHERE deleted_at IS NULL
+CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_users_username_trgm
+        ON users USING gin (username gin_trgm_ops)
+        WHERE deleted_at IS NULL
+
+
+DROP INDEX CONCURRENTLY IF EXISTS ix_users_email_lower
+DROP INDEX CONCURRENTLY IF EXISTS ix_users_username_trgm
+DROP INDEX CONCURRENTLY IF EXISTS ix_user_profiles_display_name_trgm
+
+-------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
