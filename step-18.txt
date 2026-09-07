@@ -1,0 +1,474 @@
+- Follow
+  - if type checking is true import user model
+  - id has uuid checker, primary and server generate id
+  - follower_id has uuid checker, linked o users cascade delete and not null 
+  - following_id has uuid checker, linked o users cascade delete and not null 
+  - created_at has datetime with timezone, server generate date and not null 
+  - follower has relationship to user, connect the foreign key and backpopulate 
+  - following has relationship to user, connect the foreign key and backpopulate 
+  - add unqiueness together to columns that needs it with name 
+  - add index to follower_id 
+  - add index to following_id 
+  - add index together to follower_id and follower_id with index name 
+  - return <Follow follower_id={}  following_id={}" as repr
+
+--------------------------
+
+- NotificationType
+
+    inherits from string and enum
+    mention has value "mention"
+    reply has value "reply"
+    follow has value "follow"
+    like has value "like"
+    chat_message has value "chat_message"
+    group_added has value "group_added"
+    group_removed has value "group_removed"
+    group_muted has value "group_muted"
+    group_banned has value "group_banned"
+    admin_promoted has value "admin_promoted"
+    system has value "system"
+
+- DeliveryChannel
+
+    inherits from string and enum
+    in_app has value "in_app"
+    push has value "push"
+    both has value "both"
+    Notification
+
+- Notification
+
+  - id has uuid checker, primary and server generate id
+
+  - recipient_id has uuid checker, linked to user with cascade on delete, nullable, and has an index
+  
+  - actor_id is optional and has uuid checker, linked to user with set null on delete, nullable, and has an index
+  
+  - notification_type has NotificationType enum, uses notification_type_enum as the database enum name, not null, and has an index
+  
+  - entity_type is an optional string with maximum length of 20 characters
+  
+  - entity_id is an optional uuid
+  
+  - title is a required string with maximum length of 100 characters
+  
+  - body is an optional text field
+  
+  - data is an optional dictionary stored as JSONB
+  
+  - delivery_channel has DeliveryChannel enum, uses delivery_channel_enum as the database enum name, not null, and defaults to "in_app" on the server
+  
+  - delivery_at is an optional datetime with timezone
+  
+  - push_sent is a boolean, not null, and defaults to false on the server
+  
+  - is_read is a boolean, not null, defaults to false on the server, and has an index
+  
+  - read_at is an optional datetime with timezone
+  
+  - idempotency_key is an optional string with maximum length of 64 characters and has an index
+  
+  - created_at has datetime with timezone, server generates the date, not null, and has an index
+  
+  - recipient has a relationship to User, connects using recipient_id, and backpopulates through notifications
+  
+  - actor has an optional relationship to User, connects using actor_id, and uses lazy loading with select
+  
+  - add an index for recipient_id and created_at where the notification is unread, with the name ix_notifications_recipient_unread
+  
+  - add an index for recipient_id and created_at with the name ix_notifications_recipient_created
+  
+  - add an index for recipient_id, notification_type, and created_at with the name ix_notification_recipient_type
+  
+  - add an index for idempotency_key and created_at where idempotency_key is not null, with the name ix_notifications_idempotency
+  
+  - add an index for entity_type and entity_id where entity_id is not null, with the name ix_notifications_entity
+  
+  - add an index for created_at for pending push notifications where the delivery channel is push or both, push has not been sent, and the notification is unread, with the name ix_notifications_push_pending
+  
+  - add an index for created_at where the notification is unread, with the name ix_notifications_cleanup
+  
+  - return <Notification id={} type={} recipient_id={} read={}> as repr
+
+
+
+---------------------------------------------
+
+- Post
+  - __tablename__ is set to "posts"
+  - id has uuid checker, primary key, and server generates the id
+  - author_id has uuid checker, linked to user with cascade delete, not null, and has an index
+  - content is an optional text field
+  - media_path is an optional string with maximum length of 20 characters
+  - media_type is an optional string with maximum length of 20 characters
+  - like_count is an integer, not null, and defaults to 0 on the server
+  - reply_count is an integer, not null, and defaults to 0 on the server
+  - content_tsv is an optional TSVECTOR field
+  - created_at has datetime with timezone, server generates the date, not null, and has an index
+  - updated_at has datetime with timezone, server generates the date, not null, and updates automatically with the current date when modified
+  - deleted_at is an optional datetime with timezone
+  - author has a relationship to User and backpopulates through posts
+  - replies has a relationship to Reply, backpopulates through root_post, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - likes has a relationship to PostLike, backpopulates through post, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - add an index for author_id and created_at with the name ix_posts_author_created and descending order for created_at
+  - add an index for created_at where deleted_at is null, with the name ix_posts_active
+  - add a GIN index for content_tsv with the name ix_posts_content_fts
+  - return <Post id={} author_id={}> as repr
+
+
+
+
+
+- Reply
+  - __tablename__ is set to "replies"
+  - id has uuid checker, primary key, and server generates the id
+  - root_post_id has uuid checker, linked to posts with cascade delete, not null, and has an index
+  - parent_id is an optional uuid and has an index
+  - author_id has uuid checker, linked to users with cascade delete, not null, and has an index
+  - content is an optional text field
+  - depth is a SmallInteger, not null, and defaults to 0 on the server
+  - path is a required text field and has an index
+  - reply_count is an integer, not null, and defaults to 0 on the server
+  - created_at has datetime with timezone, server generates the date, not null, and has an index
+  - updated_at has datetime with timezone, server generates the date, not null, and updates automatically with the current date when modified
+  - deleted_at is an optional datetime with timezone
+  - root_post has a relationship to Post and backpopulates through replies
+  - author has a relationship to User
+  - likes has a relationship to PostLike, connects using reply_id, backpopulates through reply, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - add an index for root_post_id and created_at with the name ix_replies_root_post_created
+  - add an index for parent_id and created_at with the name ix_replies_parent_id
+  - add a B-tree index for path with the name ix_replies_path
+  - add an index for root_post_id where deleted_at is null, with the name ix_replies_active
+  - return <Reply id={} root_post_id={} depth={}> as repr
+
+
+
+
+- PostLike
+  - __tablename__ is set to "post_likes"
+  - id has uuid checker, primary key, and server generates the id
+  - user_id has uuid checker, linked to users with cascade delete, and not null
+  - post_id is an optional uuid, linked to posts with cascade delete, and nullable
+  - reply_id is an optional uuid, linked to replies with cascade delete, and nullable
+  - created_at has datetime with timezone, server generates the date, and not null
+  - post has an optional relationship to Post, connects using post_id, and backpopulates through likes
+  - reply has an optional relationship to Reply, connects using reply_id, and backpopulates through likes
+  - add uniqueness to user_id and post_id together with the name uq_post_likes_user_post
+  - add uniqueness to user_id and reply_id together with the name uq_post_likes_user_reply
+  - add an index to post_id with the name ix_post_likes_post_id
+  - add an index to reply_id with the name ix_post_likes_reply_id
+  - add an index to user_id with the name ix_post_likes_user_id
+  - return <PostLike user_id={} post_id={} reply_id={}> as repr
+
+
+
+---------------------------------------------
+
+- RefreshToken
+  - __tablename__ is set to "refresh_tokens"
+  - id has uuid checker, primary key, and server generates the id
+  - user_id has uuid checker, linked to users with cascade delete, not null, and has an index
+  - family_id has uuid checker, not null, and has an index
+  - token_hash is a required string with maximum length of 64 characters and must be unique
+  - is_revoked is a boolean, not null, defaults to false on the server, and has an index
+  - user_agent is an optional string with maximum length of 500 characters
+  - ip_address is an optional string with maximum length of 45 characters
+  - expires_at has datetime with timezone, not null, and has an index
+  - created_at has datetime with timezone, server generates the date, and not null
+  - last_used_at is an optional datetime with timezone
+  - user has a relationship to User and backpopulates through refresh_tokens
+  - add an index for family_id and is_revoked with the name ix_refresh_tokens_family_active
+  - add an index for user_id and is_revoked where is_revoked is false, with the name ix_refresh_tokens_user_active
+  - return <RefreshToken id={} user_id={} revoked={}> as repr
+
+
+- BlacklistedToken
+  - __tablename__ is set to "blacklisted_tokens"
+  - id has uuid checker, primary key, and server generates the id
+  - jti is a required string with maximum length of 36 characters, must be unique, and has an index
+  - user_id has uuid checker, linked to users with cascade delete, not null, and has an index
+  - expires_at has datetime with timezone, not null, and has an index
+  - blacklisted_at has datetime with timezone, not null, and server generates the date
+  - return <BlacklistedToken jti={} user_id={}> as repr
+
+
+
+
+
+----------------------------------------------------------------
+
+
+- MessageType
+  - inherits from string and enum
+  - text has value "text"
+  - image has value "image"
+  - file has value "file"
+  - voice has value "voice"
+  - system has value "system"
+
+- DeliveryStatus
+  - inherits from string and enum
+  - sent has value "sent"
+  - delivered has value "delivered"
+  - read has value "read"
+
+- Message
+  - __tablename__ is set to "messages"
+  - id has uuid checker, primary key, and server generates the id
+  - chat_id has uuid checker, linked to chats with cascade delete, not null, and has an index
+  - sender_id has uuid checker, linked to users with set null on delete, nullable, and has an index
+  - message_type has MessageType enum, uses "message_type_enum" as the database enum name, not null, defaults to "text" on the server, and has an index
+  - content is an optional text field
+  - attachment_path is an optional string with maximum length of 500 characters
+  - attachment_name is an optional string with maximum length of 255 characters
+  - attachment_mime is an optional string with maximum length of 100 characters
+  - attachment_size is an optional integer
+  - meta_data is an optional dictionary stored as JSONB
+  - quoted_message_id is an optional uuid, linked to messages with set null on delete, and has an index
+  - thread_root_id is an optional uuid, linked to messages with set null on delete, and has an index
+  - is_encrypted is a boolean, not null, and defaults to false on the server
+  - delivery_status has DeliveryStatus enum, uses "delivery_status_enum" as the database enum name, not null, defaults to "sent" on the server, and has an index
+  - stream_id is an optional string with maximum length of 30 characters
+  - edited_at is an optional datetime with timezone
+  - idempotency_key is an optional string with maximum length of 36 characters and has an index
+  - created_at has datetime with timezone, server generates the date, not null, and has an index
+  - updated_at has datetime with timezone, server generates the date, not null, and updates automatically with the current date when modified
+  - deleted_at is an optional datetime with timezone
+  - chat has a relationship to Chat and backpopulates through messages
+  - sender has an optional relationship to User
+  - reactions has a relationship to MessageReaction, backpopulates through message, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - reads has a relationship to MessageRead, backpopulates through message, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - edits has a relationship to MessageEdit, backpopulates through message, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - quoted_message has an optional self-referencing relationship to Message, connects using quoted_message_id, uses Message.id as the remote side, and uses lazy loading with select
+  - add an index for chat_id and created_at with the name ix_messages_chat_created
+  - add an index for chat_id and created_at where deleted_at is null, with the name ix_messages_chat_active
+  - add an index for thread_root_id and created_at where thread_root_id is not null, with the name ix_messages_thread_root
+  - add an index for chat_id and idempotency_key where idempotency_key is not null, with the name ix_messages_idempotency
+  - return <Message id={} chat_id={} type={}> as repr
+
+
+
+- MessageEdit
+  - __tablename__ is set to "message_edits"
+  - id has uuid checker, primary key, and server generates the id
+  - message_id has uuid checker, linked to messages with cascade delete, not null, and has an index
+  - previous_content is an optional text field
+  - edited_by_id has uuid checker, linked to users with set null on delete, and nullable
+  - edited_at has datetime with timezone, not null, server generates the date, and has an index
+  - message has a relationship to Message and backpopulates through edits
+  - return <MessageEdit message_id={} at={}> as repr
+
+
+
+- MessageReaction
+  - __tablename__ is set to "message_reactions"
+  - id has uuid checker, primary key, and server generates the id
+  - message_id has uuid checker, linked to messages with cascade delete, and not null
+  - user_id has uuid checker, linked to users with cascade delete, and not null
+  - emoji is a required string with maximum length of 10 characters
+  - created_at has datetime with timezone, not null, and server generates the date
+  - message has a relationship to Message and backpopulates through reactions
+  - add uniqueness to message_id, user_id, and emoji together with the name uq_message_reactions_message_user_emoji
+  - add an index to message_id with the name ix_message_reactions_message_id
+  - add an index to user_id and message_id together with the name ix_message_reactions_user_message
+  - return <MessageReaction message_id={} user_id={} emoji={}> as repr
+
+
+
+
+- MessageRead
+  - __tablename__ is set to "message_reads"
+  - id has uuid checker, primary key, and server generates the id
+  - message_id has uuid checker, linked to messages with cascade delete, and not null
+  - user_id has uuid checker, linked to users with cascade delete, and not null
+  - chat_id has uuid checker, linked to chats with cascade delete, not null, and has an index
+  - read_at has datetime with timezone, not null, and server generates the date
+  - message has a relationship to Message and backpopulates through reads
+  - add uniqueness to message_id and user_id together with the name uq_message_reads_message_user
+  - add an index to message_id with the name ix_message_reads_message_id
+  - add an index to user_id, chat_id, and read_at together with the name ix_message_reads_user_chat
+  - return <MessageRead message_id={} user_id={} at={}> as repr
+
+
+
+
+------------------------------------------------------------------
+
+
+
+- Interest
+  - __tablename__ is set to "interests"
+  - id has uuid checker, primary key, and server generates the id
+  - display_name is a required string with maximum length of 100 characters and must be unique
+  - slug is a required string with maximum length of 100 characters, must be unique, and has an index
+  - description is an optional text field
+  - icon_emoji is an optional string with maximum length of 50 characters
+  - is_active is a boolean, not null, and defaults to true
+  - created_at has datetime with timezone, not null, and server generates the date
+  - user_interests has a relationship to UserInterest, backpopulates through interest, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - return <Interest slug={}> as repr
+
+
+
+- UserInterest
+  - __tablename__ is set to "user_interests"
+  - id has uuid checker, primary key, and server generates the id
+  - user_id has uuid checker, linked to users with cascade delete, and not null
+  - interest_id has uuid checker, linked to interests with cascade delete, and not null
+  - created_at has datetime with timezone, not null, and server generates the date
+  - user has a relationship to User and backpopulates through interests
+  - interest has a relationship to Interest and backpopulates through user_interests
+  - add uniqueness to user_id and interest_id together with the name uq_user_interests_user_interest
+  - add an index to user_id with the name ix_user_interests_user_id
+  - add an index to interest_id with the name ix_user_interests_interest_id
+  - return <UserInterest user_id={} interest_id={}> as repr
+
+
+
+
+-----------------------------------------------------------
+
+
+- ChatType
+  - inherits from string and enum
+  - direct has value "direct"
+  - group has value "group"
+
+- ParticipantRole
+  - inherits from string and enum
+  - member has value "member"
+  - admin has value "admin"
+  - owner has value "owner"
+
+- Chat
+  - __tablename__ is set to "chats"
+  - id has uuid checker, primary key, and server generates the id
+  - chat_type has ChatType enum, uses "chat_type_enum" as the database enum name, not null, and has an index
+  - name is an optional string with maximum length of 100 characters
+  - description is an optional text field
+  - avatar_path is an optional string with maximum length of 500 characters
+  - last_message_id is an optional uuid
+  - last_message_at has datetime with timezone, is nullable, and has an index
+  - participant_count is an integer, not null, and defaults to 0 on the server
+  - created_at has datetime with timezone, not null, and server generates the date
+  - updated_at has datetime with timezone, not null, server generates the date, and updates automatically with the current date when modified
+  - deleted_at is an optional datetime with timezone
+  - participants has a relationship to ChatParticipant, backpopulates through chat, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - messages has a relationship to Message, backpopulates through chat, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - add an index for last_message_at where deleted_at is null, with the name ix_chats_last_message_at
+  - return <Chat id={} type={} name={}> as repr
+
+
+
+
+- ChatParticipant
+  - __tablename__ is set to "chat_participants"
+  - id has uuid checker, primary key, and server generates the id
+  - chat_id has uuid checker, linked to chats with cascade delete, and not null
+  - user_id has uuid checker, linked to users with cascade delete, and not null
+  - role has ParticipantRole enum, uses "participant_role_enum" as the database enum name, not null, and defaults to "member" on the server
+  - is_active is a boolean, not null, and defaults to true on the server
+  - is_muted is a boolean, not null, and defaults to false on the server
+  - muted_until has datetime with timezone and is nullable
+  - is_banned is a boolean, not null, and defaults to false on the server
+  - notification_muted is a boolean, not null, and defaults to false on the server
+  - last_read_message_id is an optional uuid
+  - last_read_at has datetime with timezone and is nullable
+  - joined_at has datetime with timezone, not null, and server generates the date
+  - left_at is an optional datetime with timezone
+  - updated_at has datetime with timezone, not null, server generates the date, and updates automatically with the current date when modified
+  - chat has a relationship to Chat and backpopulates through participants
+  - user has a relationship to User and backpopulates through chat_memberships
+  - add uniqueness to chat_id and user_id together with the name uq_chat_participants_chat_user
+  - add an index for chat_id and user_id where is_active is true, with the name ix_chat_participants_chat_user_active
+  - add an index for user_id where is_active is true, with the name ix_chat_participants_user_active
+  - add an index for user_id and chat_id together with the name ix_chat_participants_user_chat
+  - return <ChatParticipant chat_id={} user_id={} role={}> as repr
+
+
+
+
+----------------------------------------------------------
+
+
+- User
+  - __tablename__ is set to "users"
+  - id has uuid checker, primary key, and server generates the id
+  - email is a required string with maximum length of 320 characters, must be unique, and has an index
+  - username is a required string with maximum length of 30 characters, must be unique, and has an index
+  - password_hash is a required string with maximum length of 255 characters
+  - is_verified is a boolean, not null, and defaults to false on the server
+  - is_active is a boolean, not null, and defaults to true on the server
+  - is_superuser is a boolean, not null, and defaults to false on the server
+  - registered_ip is an optional string with maximum length of 45 characters
+  - registered_country is an optional string with maximum length of 2 characters
+  - registered_city is an optional string with maximum length of 100 characters
+  - created_at has datetime with timezone, not null, and server generates the date
+  - updated_at has datetime with timezone, not null, server generates the date, and updates automatically with the current date when modified
+  - deleted_at is an optional datetime with timezone and has an index
+  - last_login_at is an optional datetime with timezone
+  - username_changed_at is an optional datetime with timezone
+  - profile has an optional one-to-one relationship to UserProfile, backpopulates through user, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - refresh_tokens has a relationship to RefreshToken, backpopulates through user, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - interests has a relationship to UserInterest, backpopulates through user, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - posts has a relationship to Post, backpopulates through author, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - followers has a relationship to Follow, connects using Follow.following_id, backpopulates through following, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - following has a relationship to Follow, connects using Follow.follower_id, backpopulates through follower, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - chat_memberships has a relationship to ChatParticipant, backpopulates through user, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - notifications has a relationship to Notification, connects using Notification.recipient_id, backpopulates through recipient, cascades all operations and deletes orphan records, and uses lazy loading with select
+  - add an index for email where deleted_at is null, with the name ix_users_email_active
+  - add an index for username where deleted_at is null, with the name ix_users_username_active
+  - add a GIN trigram index for username with the name ix_users_username_fts
+  - return <User id={} username={}> as repr
+
+
+- UserProfile
+  - __tablename__ is set to "user_profiles"
+  - id has uuid checker, primary key, and server generates the id
+  - user_id has uuid checker, linked to users with cascade delete, must be unique, not null, and has an index
+  - display_name is an optional string with maximum length of 50 characters
+  - bio is an optional text field
+  - location is an optional string with maximum length of 100 characters
+  - website_url is an optional string with maximum length of 500 characters
+  - avatar_path is an optional string with maximum length of 500 characters
+  - avatar_blurhash is an optional string with maximum length of 100 characters
+  - follower_count is an integer, not null, and defaults to 0 on the server
+  - following_count is an integer, not null, and defaults to 0 on the server
+  - post_count is an integer, not null, and defaults to 0 on the server
+  - created_at has datetime with timezone, not null, and server generates the date
+  - updated_at has datetime with timezone, not null, server generates the date, and updates automatically with the current date when modified
+  - username_denorm is a required string with maximum length of 30 characters
+  - search_vector is an optional TSVECTOR field and is deferred
+  - user has a relationship to User and backpopulates through profile
+  - return <UserProfile user_id={}> as repr
+
+
+
+- VerificationToken
+  - __tablename__ is set to "verification_tokens"
+  - id has uuid checker, primary key, and server generates the id
+  - user_id has uuid checker, linked to users with cascade delete, must be unique, not null, and has an index
+  - code_hash is a required string with maximum length of 64 characters
+  - expires_at has datetime with timezone, not null, and has an index
+  - created_at has datetime with timezone, not null, and server generates the date
+  - used_at is an optional datetime with timezone
+  - return <VerificationToken user_id={} expires_at={}> as repr
+
+
+
+- DailyUserActivity
+  - __tablename__ is set to "daily_user_activity"
+  - id has uuid checker, primary key, and defaults to uuid.uuid4
+  - user_id has uuid checker, linked to users with cascade delete, and not null
+  - activity_date has date type and is not null
+  - was_active is a boolean, not null, and defaults to true
+  - duration_seconds has Numeric with precision 10 and scale 2, not null, and defaults to 0
+  - updated_at has datetime with timezone, not null, defaults to the current UTC datetime, and updates automatically to the current UTC datetime when modified
+  - add uniqueness to user_id and activity_date together with the name uq_user_activity_date
+  - add an index to activity_date with the name ix_daily_activity_date
+
+
+
+
+
